@@ -1,5 +1,19 @@
-#!/usr/bin/env bash
-# transfers a file from a client to a server with scp
+#!/bin/bash
 
-scp -i "/root/.ssh/id_rsa" -o StrictHostKeyChecking=no "/ALU/alu-system_engineering-devops/web_server/0-transfer_file" "ubuntu@54.242.227.176":~/
+# Prompt the user for the filename
+echo "Please enter the name of the file you want to transfer:"
+read filename
 
+# Define the directory path
+directory="/ALU/alu-system_engineering-devops/web_server/"
+
+# Full path of the file to be transferred
+filepath="${directory}${filename}"
+
+# Check if the file exists
+if [ -f "$filepath" ]; then
+    # Transfer the file using scp
+    scp -i "/root/.ssh/id_rsa" -o StrictHostKeyChecking=no "$filepath" "ubuntu@54.242.227.176":~/
+else
+    echo "File does not exist in the specified directory."
+fi
