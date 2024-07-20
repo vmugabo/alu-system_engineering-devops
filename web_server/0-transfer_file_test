@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# transfers a file from a client to a server with scp
+
+scp -i "/root/.ssh/id_rsa" -o StrictHostKeyChecking=no "/ALU/alu-system_engineering-devops/web_server/0-transfer_file" "ubuntu@54.242.227.176":~/
+
