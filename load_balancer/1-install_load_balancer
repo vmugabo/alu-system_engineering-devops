@@ -1,13 +1,24 @@
 #!/usr/bin/env bash
-# Configures a new Ubuntu server with a HAproxy load-balancer
+# Configures a new Ubuntu server with an HAproxy load-balancer
+
 apt-get -y install software-properties-common
+
 add-apt-repository -y ppa:vbernat/haproxy-1.8
+
 apt-get -y update
-apt-get -y install haproxy=1.8.\*
+
+if ! apt-get -y install haproxy=1.8.\*; then
+  echo "PPA for HAProxy 1.8 not found or not accessible. Installing the latest available version from the default repository."
+  apt-get -y install haproxy
+fi
+
 sed -i '/errorfile 504/a listen mugabo' /etc/haproxy/haproxy.cfg
 sed -i '/listen mugabo/a         bind :80' /etc/haproxy/haproxy.cfg
 sed -i '/bind :80/a         mode http' /etc/haproxy/haproxy.cfg
+
 sed -i '/mode http/a         server 6096-web-01 54.242.227.176:80 check' /etc/haproxy/haproxy.cfg
-sed -i '/server 6096-web-01 54.242.227.176:80 check/a         server 6096-web-01 54.146.248.59:80 check' /etc/haproxy/haproxy.cfg
+sed -i '/server 6096-web-01 54.242.227.176:80 check/a         server 6096-web-02 54.146.248.59:80 check' /etc/haproxy/haproxy.cfg
+
 sed -i '/#EXTRAOPTS="-de -m 16"/a ENABLED=1' /etc/default/haproxy
-service haproxy start
+
+systemctl start haproxy
